@@ -1,24 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@GiveMeSomething 
-github
-/
-gitignore
-2.9k
-94.5k49.1k
- Code Pull requests 137 Actions Projects 0 Security Insights
-gitignore/Node.gitignore
-@SimonSiefke SimonSiefke Ignore files inside `.vscode-test` (#3256)
-6c87d24 on Dec 16, 2019
-@stuartpb@shiftkey@TennyZhuang@venatoria@SimonSiefke@ro31337@Richienb@melonmanchan@gouthamve@jucrouzet@cheddar@arcresu@kesoji@tejashah88@sroberts@segayuu@MCSH@rgbkrk@rsolomo@peat@noinkling@ndelvalle@MikeRalphson@lmedson@unixchad@kerimdzhanov
-107 lines (78 sloc)  1.64 KB
-  
 # Logs
 logs
 *.log
@@ -138,5 +117,3 @@ API
 Training
 Blog
 About
-
-.yarn
