@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import { Card, CardImg, CardTitle, CardBody, CardText, ListGroup, ListGroupItem } from 'reactstrap';
 
 class DishDetail extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     renderDish(dish) {
         if (dish != null) {
             return (
