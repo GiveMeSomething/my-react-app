@@ -69,4 +69,4 @@ function RenderComment(dish) {
 const DishDetail = (props) =>{
     return(RenderDish(props.selected));
 }
-export default DishDetail
+export default DishDetail;
