@@ -32,13 +32,11 @@ class Main extends Component {
             <div>
                 <Header></Header>
                 <Switch>
-                    <Route path="/home" componnent={HomePage}></Route>
-                    <Route
-                        exact path="/menu"
-                        componnent=
-                        {
-                            () => <Menu dishes={this.state.dishes}></Menu>
-                        }>
+                    <Route path="/home">
+                        {HomePage}
+                    </Route>
+                    <Route exact path="/menu">
+                        <Menu dishes={this.state.dishes} onClick></Menu>
                     </Route>
                     <Redirect to="/home"></Redirect>
                 </Switch>
