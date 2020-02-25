@@ -5,6 +5,7 @@ import Header from './Header';
 import Footer from './Footer';
 import Home from './Home';
 import Contact from './Contact';
+import About from './AboutUs';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { DISHES } from '../shared/dishes';
 import { PROMOTIONS } from '../shared/promotions';
@@ -63,6 +64,9 @@ class Main extends Component {
                     </Route>
                     <Route path="/contactus">
                         <Contact></Contact>
+                    </Route>
+                    <Route path="/aboutus">
+                        <About leaders={this.state.leaders}></About>
                     </Route>
                     <Redirect to="/home"></Redirect>
                 </Switch>
