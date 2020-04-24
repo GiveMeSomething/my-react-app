@@ -4,13 +4,13 @@ import {
     ListGroup, ListGroupItem,
     Breadcrumb, BreadcrumbItem,
     Button,
-    Modal, ModalHeader, ModalBody, ModalFooter,
+    Modal, ModalHeader, ModalBody,
     Row, Label
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 
-function RenderDish(dish, comments) {
+function RenderDish(dish, comments, toggleModal, addComment) {
     if (dish != null) {
         return (
             <div className="container">
@@ -46,7 +46,7 @@ function RenderDish(dish, comments) {
                         </div>
                         <div className="row">
                             <div className="col-12">
-                                {RenderComment(comments)}
+                                {RenderComment(comments, dish.id, toggleModal, addComment)}
                             </div>
                         </div>
                     </div>
@@ -60,7 +60,7 @@ function RenderDish(dish, comments) {
     }
 }
 
-function RenderComment(comments) {
+function RenderComment(comments, dishId, toggleModal, addComment) {
     const view = comments.map((comment) => {
         return (
             <ListGroupItem key={comment.id}>
@@ -83,9 +83,24 @@ function RenderComment(comments) {
     });
 
     return (
-        <ListGroup>
-            {view}
-        </ListGroup>
+        <div>
+            <div className="container">
+                <div className="row">
+                    <div className="col-12">
+                        <ListGroup>
+                            {view}
+                        </ListGroup>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12 pt-3">
+                        <Button color="primary" onClick={toggleModal}>
+                            Submit
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
 class DishDetail extends Component {
@@ -107,95 +122,90 @@ class DishDetail extends Component {
         });
     }
 
+    handleSubmit(values) {
+        this.props.addComment(this.props.dish.id, values.rating, values.name, values.comment);
+    }
+
     render() {
+        const required = (val) => val && val.length;
+        const maxLength = (len) => (val) => !(val) || (val.length <= len);
+        const minLength = (len) => (val) => val && (val.length >= len);
+        const isNumber = (val) => !isNaN(val);
         return (
             <div>
-                {RenderDish(this.state.dish, this.state.comments)}
-                <div className="container">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-12 col-md-6 offset-md-6 p-1">
-                                <Button color="primary" onClick={this.toggleModal}>
-                                    Submit
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {RenderDish(this.state.dish, this.state.comments, this.toggleModal, this.props.addComment)}
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModa}>
                         <h3>Submit Comment</h3>
                     </ModalHeader>
                     <ModalBody>
-                        <CommentForm></CommentForm>
+                        <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+                            <Row className="form-group">
+                                <div className="col-12">
+                                    <Label htmlFor="rating">
+                                        Rating
+                                    </Label>
+                                    <Control.select model=".rating" id="rating" name="rating"
+                                        className="form-control"
+                                        validators={{ isNumber }}>
+                                        <option>Please select a rating</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </Control.select>
+                                    <Errors model=".rating" show="touched" messages={{
+                                        isNumber: "Please select a valid rating"
+                                    }}>
+                                    </Errors>
+                                </div>
+                            </Row>
+                            <Row className="form-group">
+                                <div className="col-12">
+                                    <Label htmlFor="name">
+                                        Your Name
+                                    </Label>
+                                    <Control.text model=".name" id="name" name="name"
+                                        className="form-control"
+                                        placeholder="Your Name"
+                                        validators={{ required, maxLength: maxLength(15), minLength: minLength(3) }}>
+                                    </Control.text>
+                                    <Errors model=".name" show="touched" messages={{
+                                        required: "This is required",
+                                        maxLength: "Must be 15 characters or less",
+                                        minLength: "Must be greater than 2 characters"
+                                    }}>
+                                    </Errors>
+                                </div>
+
+                            </Row>
+                            <Row className="form-group">
+                                <div className="col-12">
+                                    <Label htmlFor="comment">
+                                        Comment
+                                    </Label>
+                                    <Control.textarea model=".comment" id="comment" name="comment"
+                                        className="form-control"
+                                        validators={{ required }}>
+                                    </Control.textarea>
+                                    <Errors model=".comment" show="touched"
+                                        messages={{
+                                            required: "This field is required"
+                                        }}>
+                                    </Errors>
+                                </div>
+                            </Row>
+                            <Row className="form-group">
+                                <Button type="submit" color="primary">
+                                    Submit Comment
+                                </Button>
+                            </Row>
+                        </LocalForm>
                     </ModalBody>
-                    <ModalFooter>
-                        <Button className="button button-primary" onClick={this.toggleModal}>Submit</Button>
-                    </ModalFooter>
                 </Modal>
             </div>
         );
     }
 }
 export default DishDetail;
-
-const required = (val) => val && val.length;
-const maxLength = (len) => (val) => !(val) || (val.length <= len);
-const minLength = (len) => (val) => val && (val.length >= len);
-class CommentForm extends Component {
-    render() {
-        return (
-            <LocalForm>
-                <Row className="form-group">
-                    <div className="col-12">
-                        <Label htmlFor="rating">
-                            Rating
-                                </Label>
-                        <Control.select model=".rating" name="rating" className="form-control">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </Control.select>
-                    </div>
-                </Row>
-                <Row className="form-group">
-                    <div className="col-12">
-                        <Label htmlFor="name">
-                            Your Name
-                                </Label>
-                        <Control.text model=".name" id="name" name="name"
-                            className="form-control"
-                            placeholder="Your Name"
-                            validators={{ required, maxLength: maxLength(15), minLength: minLength(3) }}>
-                        </Control.text>
-                        <Errors model=".name" show="touched" messages={{
-                            required: "This is required",
-                            maxLength: "Must be 15 characters or less",
-                            minLength: "Must be greater than 2 characters"
-                        }}>
-                        </Errors>
-                    </div>
-
-                </Row>
-                <Row className="form-group">
-                    <div className="col-12">
-                        <Label htmlFor="comment">
-                            Comment
-                        </Label>
-                        <Control.textarea model=".comment" id="comment" name="comment"
-                            className="form-control"
-                            validators={{ required }}>
-                        </Control.textarea>
-                        <Errors model=".comment" show="touched"
-                            messages={{
-                                required: "This field is required"
-                            }}>
-                        </Errors>
-                    </div>
-                </Row>
-            </LocalForm>
-        );
-    }
-}
