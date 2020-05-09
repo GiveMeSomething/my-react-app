@@ -9,6 +9,7 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Loading } from './Loading';
 
 function RenderDish(dish, comments, toggleModal, addComment) {
     if (dish != null) {
@@ -123,7 +124,8 @@ class DishDetail extends Component {
     }
 
     handleSubmit(values) {
-        this.props.addComment(this.props.dish.id, values.rating, values.name, values.comment);
+        this.props.addComment(this.props.dish.id, values.rating, values.name
+            , values.comment);
     }
 
     render() {
@@ -131,81 +133,99 @@ class DishDetail extends Component {
         const maxLength = (len) => (val) => !(val) || (val.length <= len);
         const minLength = (len) => (val) => val && (val.length >= len);
         const isNumber = (val) => !isNaN(val);
-        return (
-            <div>
-                {RenderDish(this.state.dish, this.state.comments, this.toggleModal, this.props.addComment)}
-                <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-                    <ModalHeader toggle={this.toggleModa}>
-                        <h3>Submit Comment</h3>
-                    </ModalHeader>
-                    <ModalBody>
-                        <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
-                            <Row className="form-group">
-                                <div className="col-12">
-                                    <Label htmlFor="rating">
-                                        Rating
-                                    </Label>
-                                    <Control.select model=".rating" id="rating" name="rating"
-                                        className="form-control"
-                                        validators={{ isNumber }}>
-                                        <option>Please select a rating</option>
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
-                                    </Control.select>
-                                    <Errors model=".rating" show="touched" messages={{
-                                        isNumber: "Please select a valid rating"
-                                    }}>
-                                    </Errors>
-                                </div>
-                            </Row>
-                            <Row className="form-group">
-                                <div className="col-12">
-                                    <Label htmlFor="name">
-                                        Your Name
-                                    </Label>
-                                    <Control.text model=".name" id="name" name="name"
-                                        className="form-control"
-                                        placeholder="Your Name"
-                                        validators={{ required, maxLength: maxLength(15), minLength: minLength(3) }}>
-                                    </Control.text>
-                                    <Errors model=".name" show="touched" messages={{
-                                        required: "This is required",
-                                        maxLength: "Must be 15 characters or less",
-                                        minLength: "Must be greater than 2 characters"
-                                    }}>
-                                    </Errors>
-                                </div>
-
-                            </Row>
-                            <Row className="form-group">
-                                <div className="col-12">
-                                    <Label htmlFor="comment">
-                                        Comment
-                                    </Label>
-                                    <Control.textarea model=".comment" id="comment" name="comment"
-                                        className="form-control"
-                                        validators={{ required }}>
-                                    </Control.textarea>
-                                    <Errors model=".comment" show="touched"
-                                        messages={{
-                                            required: "This field is required"
+        if (this.props.isLoading) {
+            return (
+                <div className="container">
+                    <div className="row">
+                        <Loading />
+                    </div>
+                </div>
+            );
+        } else if (this.props.errorMessage) {
+            return(
+                <div className="container">
+                    <div className="row">            
+                        <h4>{this.props.errorMessage}</h4>
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <div>
+                    {RenderDish(this.state.dish, this.state.comments, this.toggleModal, this.props.addComment)}
+                    <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+                        <ModalHeader toggle={this.toggleModa}>
+                            <h3>Submit Comment</h3>
+                        </ModalHeader>
+                        <ModalBody>
+                            <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+                                <Row className="form-group">
+                                    <div className="col-12">
+                                        <Label htmlFor="rating">
+                                            Rating
+                                        </Label>
+                                        <Control.select model=".rating" id="rating" name="rating"
+                                            className="form-control"
+                                            validators={{ isNumber }}>
+                                            <option>Please select a rating</option>
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                            <option>4</option>
+                                            <option>5</option>
+                                        </Control.select>
+                                        <Errors model=".rating" show="touched" messages={{
+                                            isNumber: "Please select a valid rating"
                                         }}>
-                                    </Errors>
-                                </div>
-                            </Row>
-                            <Row className="form-group">
-                                <Button type="submit" color="primary">
-                                    Submit Comment
-                                </Button>
-                            </Row>
-                        </LocalForm>
-                    </ModalBody>
-                </Modal>
-            </div>
-        );
+                                        </Errors>
+                                    </div>
+                                </Row>
+                                <Row className="form-group">
+                                    <div className="col-12">
+                                        <Label htmlFor="name">
+                                            Your Name
+                                        </Label>
+                                        <Control.text model=".name" id="name" name="name"
+                                            className="form-control"
+                                            placeholder="Your Name"
+                                            validators={{ required, maxLength: maxLength(15), minLength: minLength(3) }}>
+                                        </Control.text>
+                                        <Errors model=".name" show="touched" messages={{
+                                            required: "This is required",
+                                            maxLength: "Must be 15 characters or less",
+                                            minLength: "Must be greater than 2 characters"
+                                        }}>
+                                        </Errors>
+                                    </div>
+
+                                </Row>
+                                <Row className="form-group">
+                                    <div className="col-12">
+                                        <Label htmlFor="comment">
+                                            Comment
+                                        </Label>
+                                        <Control.textarea model=".comment" id="comment" name="comment"
+                                            className="form-control"
+                                            validators={{ required }}>
+                                        </Control.textarea>
+                                        <Errors model=".comment" show="touched"
+                                            messages={{
+                                                required: "This field is required"
+                                            }}>
+                                        </Errors>
+                                    </div>
+                                </Row>
+                                <Row className="form-group">
+                                    <Button type="submit" color="primary">
+                                        Submit Comment
+                                    </Button>
+                                </Row>
+                            </LocalForm>
+                        </ModalBody>
+                    </Modal>
+                </div>
+            );
+        }
     }
 }
 export default DishDetail;
