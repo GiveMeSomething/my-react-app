@@ -10,6 +10,7 @@ import {
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './Loading';
+import {baseUrl} from '../shared/baseUrl';
 
 function RenderDish(dish, comments, toggleModal, addComment) {
     if (dish != null) {
@@ -32,7 +33,7 @@ function RenderDish(dish, comments, toggleModal, addComment) {
                 <div className="row">
                     <div className="col-12 col-md-5 m-1">
                         <Card>
-                            <CardImg src={dish.image} alt={dish.name}></CardImg>
+                            <CardImg src={baseUrl + dish.image} alt={dish.name}></CardImg>
                             <CardBody>
                                 <CardTitle>{dish.name}</CardTitle>
                                 <CardText>{dish.description}</CardText>
